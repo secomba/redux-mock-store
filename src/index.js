@@ -4,7 +4,7 @@ const isFunction = arg => typeof arg === 'function';
 
 export default function configureStore(middlewares=[]) {
 
-  return function mockStore(getState={}) {
+  return function mockStore(getState={}, onActionDispatched) {
     function mockStoreWithoutMiddleware() {
       let actions = [];
 
@@ -19,6 +19,9 @@ export default function configureStore(middlewares=[]) {
 
         dispatch(action) {
           actions.push(action);
+          if (onActionDispatched) {
+            onActionDispatched(action);
+          }
 
           return action;
         },

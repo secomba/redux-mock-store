@@ -34,6 +34,35 @@ describe('redux-mock-store', () => {
     expect(first).toBe(action);
   });
 
+  it('should call onActionDispatched if an action is dispatched directly', (done) => {
+    const action = { type: 'ADD_ITEM' };
+    const store = mockStore({}, dispatchedAction => {
+      expect(dispatchedAction).toBe(action);
+      done();
+    });
+
+    store.dispatch(action);
+  });
+
+  it('should call onActionDispatched if an action is dispatched by a middleware', (done) => {
+    const action = { type: 'TRIGGER_ANOTHER_ACTION' };
+    const spy = sinon.spy();
+    const middlewares = [mockMiddleware(spy)];
+    const mockStoreWithMiddleware = configureStore(middlewares);
+    const expectedActionTypes = ['ANOTHER_ACTION', action.type];
+
+    const store = mockStoreWithMiddleware({}, dispatchedAction => {
+      const expectedActionType = expectedActionTypes[0];
+      expect(dispatchedAction.type).toBe(expectedActionType);
+      expectedActionTypes.shift();
+
+      if (expectedActionTypes.length === 0) {
+        done();
+      }
+    });
+
+    store.dispatch(action);
+  });
 
   it('handles async actions', (done) => {
     function increment() {

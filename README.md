@@ -68,7 +68,7 @@ it('should execute promise', (done) => {
 
 ```
 - configureStore(middlewares?: Array) => mockStore: function
-- mockStore(getState?: Object,Function) => store: Function
+- mockStore(getState?: Object,Function, onActionDispatched?: Function) => store: Function
 - store.dispatch(action) => action
 - store.getState() => state: Object
 - store.getActions() => actions: Array
